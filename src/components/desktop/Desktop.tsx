@@ -7,6 +7,7 @@ import { DesktopIcon } from './DesktopIcon'
 import { Notepad } from './apps/Notepad'
 import { FolderView, FolderItem } from './apps/FolderView'
 import { Chat } from './apps/Chat'
+import { AccountIntelligence } from './apps/AccountIntelligence'
 import { useState, useEffect } from 'react'
 import * as Sentry from '@sentry/nextjs'
 
@@ -138,6 +139,27 @@ function DesktopContent() {
     })
   }
 
+  const openAccountIntelligence = () => {
+    Sentry.logger.info('Opening window', { window: 'account-intelligence' })
+    Sentry.metrics.count('desktop.window.open', 1, {
+      attributes: { window_type: 'account-intelligence', window_id: 'account-intelligence' }
+    })
+    openWindow({
+      id: 'account-intelligence',
+      title: 'Account Intelligence',
+      icon: '📊',
+      x: 120,
+      y: 60,
+      width: 800,
+      height: 600,
+      minWidth: 600,
+      minHeight: 400,
+      isMinimized: false,
+      isMaximized: false,
+      content: <AccountIntelligence />
+    })
+  }
+
   const handleDesktopClick = () => {
     setSelectedIcon(null)
   }
@@ -165,6 +187,14 @@ function DesktopContent() {
 
       {/* Desktop icons area - z-10 to ensure it's above windows container */}
       <div className="absolute top-4 left-4 flex flex-col gap-2 z-10" onClick={(e) => e.stopPropagation()}>
+        <DesktopIcon
+          id="account-intelligence"
+          label="Account Intelligence"
+          icon="chart"
+          onDoubleClick={openAccountIntelligence}
+          selected={selectedIcon === 'account-intelligence'}
+          onSelect={() => setSelectedIcon('account-intelligence')}
+        />
         <DesktopIcon
           id="install-guide"
           label="Install Guide"
